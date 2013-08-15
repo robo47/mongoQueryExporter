@@ -7,17 +7,13 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 public class Console extends JFrame {
 
 	private static final long serialVersionUID = -7688944729863910388L;
 
 	private final JTextArea consoleWindow;
-	private final PropertiesConfiguration preferences;
 
-	public Console(PropertiesConfiguration preferences) {
-		this.preferences = preferences;
+	public Console() {
 		getContentPane().setLayout(
 				new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
@@ -31,13 +27,7 @@ public class Console extends JFrame {
 
 	public void appendRow(String row) {
 		consoleWindow.append(row + "\n");
-		System.out.println(row);
 		consoleWindow.setCaretPosition(consoleWindow.getText().length() - 1);
 		consoleWindow.update(consoleWindow.getGraphics());
 	}
-
-	public PropertiesConfiguration getPreferences() {
-		return this.preferences;
-	}
-
 }

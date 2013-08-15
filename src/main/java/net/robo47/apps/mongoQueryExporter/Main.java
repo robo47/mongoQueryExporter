@@ -1,9 +1,9 @@
 package net.robo47.apps.mongoQueryExporter;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.Serializable;
 
 import javax.swing.JFrame;
@@ -18,10 +18,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class Main {
 
 	final public static int iterationInfo = 5000;
-	final public static File propertiesFile = new File(
-			System.getProperty("user.home") + File.separator
-					+ ".mongoQueryExporter");
-	PropertiesConfiguration config;
 
 	public Main() {
 
@@ -29,27 +25,10 @@ public class Main {
 
 	public void run() {
 
-		if (propertiesFile.exists()) {
-			try {
-				config = new PropertiesConfiguration(propertiesFile);
-			} catch (ConfigurationException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			try {
-				config = new PropertiesConfiguration(propertiesFile);
-				config.save();
-			} catch (ConfigurationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		}
-
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				showGui(config);
+				showGui();
 				System.out.println("run end");
 			}
 		});
@@ -88,29 +67,18 @@ public class Main {
 		}
 	}
 
-	public void loadPreferencesForJFrame(JFrame frame, String name,
-			PropertiesConfiguration properties) {
-		System.out.println("Loading prefs for " + name);
-		frame.setSize(
-				Integer.parseInt(properties.getString(name + "_width", "500")),
-				Integer.parseInt(properties.getString(name + "_height", "500")));
-
-	}
-
-	public void showGui(PropertiesConfiguration preferences) {
-		Console console = new Console(preferences);
-		console.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		console.addWindowListener(new Closer("console", preferences));
-		loadPreferencesForJFrame(console, "console", preferences);
+	public void showGui() {
+		Console console = new Console();
+		console.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		console.setSize(500, 500);
 		console.setMinimumSize(new Dimension(500, 500));
+		console.setLocation(new Point(500, 0));
+
 		JFrame gui = new GUI(console);
 		gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		gui.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		gui.addWindowListener(new Closer("gui", preferences));
-		loadPreferencesForJFrame(gui, "gui", preferences);
 		gui.setSize(500, 500);
+		gui.setMinimumSize(new Dimension(500, 500));
 
 		// Display the window.
 		console.pack();
