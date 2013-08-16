@@ -36,13 +36,14 @@ public class Exporter {
 			throws IOException {
 		writer = new CSVWriter(new FileWriter(file), ';', '"', '\\', "\n");
 		jongo = new Jongo(mongo.getDB(query.getDbName()));
-		List<String> fields = query.getFields();
+		List<String> fields = query.getFieldsAsList();
 
 		@SuppressWarnings("unchecked")
 		Iterator<DBObject> iterator = (Iterator<DBObject>) jongo
 				.getCollection(query.getCollectionName())
 				.find(query.getQuery()).hint(query.getHint())
-				.limit(query.getLimit()).map(new ResultHandler<DBObject>() {
+				.projection(query.getFields()).limit(query.getLimit())
+				.map(new ResultHandler<DBObject>() {
 					@Override
 					public DBObject map(DBObject result) {
 						return result;
@@ -63,6 +64,7 @@ public class Exporter {
 					stringValue = "";
 				} else {
 
+					// TODO other datatypes ?
 					if (value instanceof String) {
 						stringValue = (String) value;
 					} else if (value instanceof Integer) {
@@ -77,13 +79,18 @@ public class Exporter {
 						throw new RuntimeException(
 								"Unable to convert a value for field '"
 										+ fieldName + "' to string: "
-										+ value.toString());
+										+ value.toString() + "class: "
+										+ value.getClass());
 					}
 				}
 
 				values.add(stringValue);
 			}
-			writer.writeNext(values.toArray(new String[values.size() - 1]));
+			if (values.size() > 0) {
+				writer.writeNext(values.toArray(new String[values.size() - 1]));
+			} else {
+				console.appendRow("empty row skipped");
+			}
 			i++;
 		}
 		writer.close();
