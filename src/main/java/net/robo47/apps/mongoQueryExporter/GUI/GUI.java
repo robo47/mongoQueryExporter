@@ -1,5 +1,6 @@
 package net.robo47.apps.mongoQueryExporter.GUI;
 
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -19,23 +20,25 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ReadPreference;
 
 public class GUI extends JFrame {
 
-	private static final long serialVersionUID = 3652121405580600222L;
+	private static final long	serialVersionUID	= 3652121405580600222L;
 
-	private final JTextField serverField;
-	private final JTextField databaseField;
-	private final JTextField collectionField;
-	private final JTextPane hintField;
-	private final JTextField limitField;
-	private final JTextField filenameField;
-	private final JTextPane sortField;
-	private final JTextPane fieldsField;
-	private final JTextPane queryField;
+	private final JTextField	serverField;
+	private final JTextField	databaseField;
+	private final JTextField	collectionField;
+	private final JTextPane		hintField;
+	private final JTextField	limitField;
+	private final JTextField	filenameField;
+	private final JTextPane		sortField;
+	private final JTextPane		fieldsField;
+	private final JTextPane		queryField;
 
 	public GUI(final Console console) {
-		getContentPane().setLayout(
+		this.getContentPane().setLayout(
 				new FormLayout(new ColumnSpec[] {
 						FormFactory.RELATED_GAP_COLSPEC,
 						FormFactory.DEFAULT_COLSPEC,
@@ -66,81 +69,90 @@ public class GUI extends JFrame {
 						FormFactory.DEFAULT_ROWSPEC, }));
 
 		JLabel serverLabel = new JLabel("Server");
-		getContentPane().add(serverLabel, "2, 2, right, top");
+		this.getContentPane().add(serverLabel, "2, 2, right, top");
 
-		serverField = new JTextField();
-		getContentPane().add(serverField, "4, 2, fill, fill");
+		this.serverField = new JTextField();
+		this.getContentPane().add(this.serverField, "4, 2, fill, fill");
 
 		JLabel databaseLabel = new JLabel("Database");
-		getContentPane().add(databaseLabel, "2, 4, right, top");
+		this.getContentPane().add(databaseLabel, "2, 4, right, top");
 
-		databaseField = new JTextField();
-		getContentPane().add(databaseField, "4, 4, fill, fill");
+		this.databaseField = new JTextField();
+		this.getContentPane().add(this.databaseField, "4, 4, fill, fill");
 
 		JLabel collectionLabel = new JLabel("Collection");
-		getContentPane().add(collectionLabel, "2, 6, right, top");
+		this.getContentPane().add(collectionLabel, "2, 6, right, top");
 
-		collectionField = new JTextField();
-		getContentPane().add(collectionField, "4, 6, fill, fill");
+		this.collectionField = new JTextField();
+		this.getContentPane().add(this.collectionField, "4, 6, fill, fill");
 
 		JLabel limitLabel = new JLabel("Limit");
-		getContentPane().add(limitLabel, "2, 8, right, top");
+		this.getContentPane().add(limitLabel, "2, 8, right, top");
 
-		limitField = new JTextField();
-		getContentPane().add(limitField, "4, 8, fill, fill");
+		this.limitField = new JTextField();
+		this.getContentPane().add(this.limitField, "4, 8, fill, fill");
 
 		JLabel filenameLabel = new JLabel("Filename");
-		getContentPane().add(filenameLabel, "2, 10, right, top");
+		this.getContentPane().add(filenameLabel, "2, 10, right, top");
 
-		filenameField = new JTextField();
-		getContentPane().add(filenameField, "4, 10, fill, fill");
+		this.filenameField = new JTextField();
+		this.getContentPane().add(this.filenameField, "4, 10, fill, fill");
 
 		JLabel sortLabel = new JLabel("Sort");
-		getContentPane().add(sortLabel, "2, 12, right, top");
+		this.getContentPane().add(sortLabel, "2, 12, right, top");
 
-		sortField = new JTextPane();
-		getContentPane().add(sortField, "4, 12, fill, fill");
+		this.sortField = new JTextPane();
+		this.getContentPane().add(this.sortField, "4, 12, fill, fill");
 
 		JLabel hintLabel = new JLabel("Hint");
-		getContentPane().add(hintLabel, "2, 14, right, top");
+		this.getContentPane().add(hintLabel, "2, 14, right, top");
 
-		hintField = new JTextPane();
-		getContentPane().add(hintField, "4, 14, fill, fill");
+		this.hintField = new JTextPane();
+		this.getContentPane().add(this.hintField, "4, 14, fill, fill");
 
 		JLabel label = new JLabel("Query");
-		getContentPane().add(label, "2, 16, right, top");
+		this.getContentPane().add(label, "2, 16, right, top");
 
-		queryField = new JTextPane();
-		getContentPane().add(queryField, "4, 16, fill, fill");
+		this.queryField = new JTextPane();
+		this.getContentPane().add(this.queryField, "4, 16, fill, fill");
 
 		JLabel fieldsLabel = new JLabel("Fields");
-		getContentPane().add(fieldsLabel, "2, 18, right, top");
+		this.getContentPane().add(fieldsLabel, "2, 18, right, top");
 
-		fieldsField = new JTextPane();
-		getContentPane().add(fieldsField, "4, 18, fill, fill");
+		this.fieldsField = new JTextPane();
+		this.getContentPane().add(this.fieldsField, "4, 18, fill, fill");
+		this.fieldsField.setMinimumSize(new Dimension(0, 100));
 
 		JButton exportButton = new JButton("Export");
-		getContentPane().add(exportButton, "4, 20");
+		this.getContentPane().add(exportButton, "4, 20");
 
 		exportButton.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("Start");
 				MongoClient mongo;
+				MongoClientOptions mongoOptions = new MongoClientOptions.Builder()
+						.autoConnectRetry(true)
+						.readPreference(ReadPreference.secondaryPreferred())
+						.build();
+
 				try {
-					final String server = serverField.getText();
-					final String database = databaseField.getText();
-					final String collection = collectionField.getText();
-					final String filename = filenameField.getText();
-					final String fields = fieldsField.getText();
-					final String hint = hintField.getText();
+					final String server = GUI.this.serverField.getText();
+					final String database = GUI.this.databaseField.getText();
+					final String collection = GUI.this.collectionField
+							.getText();
+					final String filename = GUI.this.filenameField.getText();
+					final String fields = GUI.this.fieldsField.getText();
+					final String hint = GUI.this.hintField.getText();
 
-					final String sort = sortField.getText();
-					final String query = queryField.getText();
+					final String sort = GUI.this.sortField.getText();
+					final String query = GUI.this.queryField.getText();
 
-					final int limit = Integer.parseInt(limitField.getText());
+					final int limit = Integer.parseInt(GUI.this.limitField
+							.getText());
 
-					mongo = new MongoClient(server);
+					mongo = new MongoClient(server, mongoOptions);
 
 					final Query exportQuery = new Query(database, collection,
 							query, fields, hint, sort, limit);

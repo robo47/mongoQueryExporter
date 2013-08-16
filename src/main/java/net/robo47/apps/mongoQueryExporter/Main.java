@@ -14,7 +14,7 @@ public class Main {
 	/**
 	 * Each how many export rows it should show the info in the console window
 	 */
-	final public static int iterationInfo = 5000;
+	final public static int	iterationInfo	= 100;
 
 	public Main() {
 
@@ -25,7 +25,7 @@ public class Main {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				showGui();
+				Main.this.showGui();
 			}
 		});
 
