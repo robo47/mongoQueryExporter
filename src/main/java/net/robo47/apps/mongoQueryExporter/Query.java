@@ -1,7 +1,7 @@
 package net.robo47.apps.mongoQueryExporter;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +15,16 @@ import com.google.gson.Gson;
  */
 public class Query implements Serializable {
 
-	private final String collectionName;
-	private final String dbName;
-	private final String query;
-	private final String hint;
-	private final String sort;
-	private final Integer limit;
-	private final String fields;
-	private final List<String> fieldsAsList;
+	private final String		collectionName;
+	private final String		dbName;
+	private final String		query;
+	private final String		hint;
+	private final String		sort;
+	private final Integer		limit;
+	private final String		fields;
+	private final List<String>	fieldsAsList;
 
-	private static final long serialVersionUID = -8635262897777276592L;
+	private static final long	serialVersionUID	= -8635262897777276592L;
 
 	public Query(final String dbName, final String collectionName,
 			final String query, final String fields, final String hint,
@@ -36,13 +36,13 @@ public class Query implements Serializable {
 		this.limit = limit;
 		this.sort = sort;
 		this.fields = fields;
-		this.fieldsAsList = fieldsToList(this.fields);
+		this.fieldsAsList = this.fieldsToList(this.fields);
 	}
 
 	private List<String> fieldsToList(String fields) {
 		List<String> fieldsList = Lists.newArrayList();
 		Gson gson = new Gson();
-		Map<String, Double> map = new HashMap<String, Double>();
+		Map<String, Double> map = new LinkedHashMap<String, Double>();
 		map = gson.fromJson(fields, map.getClass());
 		for (String key : map.keySet()) {
 
