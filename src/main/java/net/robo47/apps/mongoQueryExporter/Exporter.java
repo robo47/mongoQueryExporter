@@ -12,6 +12,7 @@ import java.util.List;
 import net.robo47.apps.mongoQueryExporter.GUI.Console;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.bson.types.ObjectId;
 import org.jongo.Find;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
@@ -121,6 +122,9 @@ public class Exporter {
 						SimpleDateFormat dt = new SimpleDateFormat(
 								"dd.MM.yyyy HH:mm:ss");
 						stringValue = dt.format((Date) value);
+					} else if (value instanceof ObjectId) {
+						ObjectId id = ((ObjectId) value);
+						stringValue = id.toStringMongod();
 					}
 
 					if (stringValue == null) {
