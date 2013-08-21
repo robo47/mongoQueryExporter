@@ -1,21 +1,13 @@
 package net.robo47.apps.mongoQueryExporter;
 
 import java.awt.Dimension;
-import java.awt.Point;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import net.robo47.apps.mongoQueryExporter.GUI.Console;
 import net.robo47.apps.mongoQueryExporter.GUI.GUI;
 
 public class Main {
-
-	/**
-	 * Each how many export rows it should show the info in the console window
-	 */
-	final public static int	iterationInfo	= 100;
-
 	public Main() {
 
 	}
@@ -32,19 +24,13 @@ public class Main {
 	}
 
 	public void showGui() {
-		Console console = new Console();
-		console.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		console.setMinimumSize(new Dimension(500, 500));
-		console.setLocation(new Point(505, 0));
-
-		JFrame gui = new GUI(console);
+		JFrame gui = new GUI();
 		gui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		gui.setMinimumSize(new Dimension(500, 500));
 
 		gui.pack();
-		console.pack();
 		gui.setVisible(true);
-		console.setVisible(true);
+
 	}
 
 	/**
